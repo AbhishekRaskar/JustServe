@@ -18,7 +18,7 @@ volunteerRouter.post("/add", async (req, res) => {
 });
 
 // update
-volunteerRouter.patch("/update/:id", auth, async (req, res) => {
+volunteerRouter.patch("/update/:id", async (req, res) => {
   const { id } = req.params;
   // console.log("BODY", req.body);
   const posts = await VolunteerModel.findOne({ _id: id });
@@ -31,9 +31,22 @@ volunteerRouter.patch("/update/:id", auth, async (req, res) => {
     res.status(400).json({ error: error.message });
   }
 });
+//single data
+// volunteerRouter.get("/:id", async (req, res) => {
+//   const { id } = req.params;
+//   // console.log("BODY", req.body);
+
+//   try {
+//     const posts = await VolunteerModel.findOne({ _id: id });
+
+//     res.status(200).json({ data: posts });
+//   } catch (error) {
+//     res.status(400).json({ error: error.message });
+//   }
+// });
 
 // delete
-volunteerRouter.delete("/delete/:id", auth, async (req, res) => {
+volunteerRouter.delete("/delete/:id", async (req, res) => {
   const { id } = req.params;
   console.log("BODY", req.body);
   const posts = await VolunteerModel.findOne({ _id: id });
