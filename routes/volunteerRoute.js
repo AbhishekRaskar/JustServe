@@ -1,9 +1,10 @@
 const express = require("express");
 const { VolunteerModel } = require("../models/volunteerModel");
+const { auth } = require("../middleware/authMiddleware");
 
 const volunteerRouter = express.Router();
 
-
+// volunteerRouter.use(auth);
 
 volunteerRouter.post("/add", async (req, res) => {
   const data = req.body;
@@ -17,7 +18,7 @@ volunteerRouter.post("/add", async (req, res) => {
 });
 
 // update
-volunteerRouter.patch("/update/:id", async (req, res) => {
+volunteerRouter.patch("/update/:id", auth, async (req, res) => {
   const { id } = req.params;
   // console.log("BODY", req.body);
   const posts = await VolunteerModel.findOne({ _id: id });
@@ -32,7 +33,7 @@ volunteerRouter.patch("/update/:id", async (req, res) => {
 });
 
 // delete
-volunteerRouter.delete("/delete/:id", async (req, res) => {
+volunteerRouter.delete("/delete/:id", auth, async (req, res) => {
   const { id } = req.params;
   console.log("BODY", req.body);
   const posts = await VolunteerModel.findOne({ _id: id });
@@ -46,6 +47,7 @@ volunteerRouter.delete("/delete/:id", async (req, res) => {
 });
 
 // get
+
 volunteerRouter.get("/get", async (req, res) => {
   let { location, type, page, limit, search } = req.query;
 
@@ -109,6 +111,18 @@ volunteerRouter.get("/get", async (req, res) => {
     res.status(400).json({ error: err.message });
   }
 });
+volunteerRouter.get("/:itemId", async (req, res) => {
+  try {
+    const itemId = req.params.itemId;
+    const item = await VolunteerModel.findById(itemId);
 
+    if (!item) {
+      return res.status(404).json({ message: "Item not found" });
+    }
 
+    res.json(item);
+  } catch (err) {
+    res.status(500).json({ message: "Server error" });
+  }
+});
 module.exports = { volunteerRouter };
